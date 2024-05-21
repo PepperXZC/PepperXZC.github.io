@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.lug.ustc.edu.cn/css?family=Times+New+Roman:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link href="https://fonts.googleapis.com/css?family=Noto+Serif+SC|Roboto&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"pepthink.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="这里记录一下不同种类的 Sequence 得到的 M。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MRI Simulation - GRE and SSFP">
+<meta property="og:url" content="http://pepthink.com/posts/7e03c1ae.html">
+<meta property="og:site_name" content="PepperXZC&#39;s Notes">
+<meta property="og:description" content="这里记录一下不同种类的 Sequence 得到的 M。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pepnote.cn//image/1-1673325462653-5.jpg">
+<meta property="og:image" content="https://pepnote.cn//image/2.jpg">
+<meta property="article:published_time" content="2023-01-08T09:15:49.000Z">
+<meta property="article:modified_time" content="2024-05-21T10:58:34.257Z">
+<meta property="article:author" content="PepperXZC">
+<meta property="article:tag" content="MRI">
+<meta property="article:tag" content="Matlab code">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pepnote.cn//image/1-1673325462653-5.jpg">
+
+
+<link rel="canonical" href="http://pepthink.com/posts/7e03c1ae.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://pepthink.com/posts/7e03c1ae.html","path":"posts/7e03c1ae.html","title":"MRI Simulation - GRE and SSFP"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MRI Simulation - GRE and SSFP | PepperXZC's Notes</title>
+  
+
+
+
+
+
+
+
+<link rel="dns-prefetch" href="https://waline-think.vercel.app"><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/theme-next/theme-next-needmoreshare2@1/needsharebutton.min.css"><style>
+#needsharebutton-postbottom {
+  cursor: pointer;
+  height: 26px;
+  margin-top: 10px;
+  position: relative;
+}
+#needsharebutton-postbottom .btn {
+  border: 1px solid $btn-default-border-color;
+  border-radius: 3px;
+  display: initial;
+  padding: 1px 4px;
+}
+</style>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style><link rel="alternate" href="/atom.xml" title="PepperXZC's Notes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PepperXZC's Notes</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Time will tell.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AF%94%E8%BE%83-GRE-%E4%B8%8E-refocussed-SSFP-%E7%9A%84%E6%95%88%E6%9E%9C"><span class="nav-number">1.</span> <span class="nav-text">比较 GRE 与 refocussed-SSFP 的效果</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.1.</span> <span class="nav-text">主程序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AF%94%E8%BE%83%E7%BB%93%E6%9E%9C%E3%80%81%E6%96%87%E6%A1%A3%E8%A7%A3%E9%87%8A"><span class="nav-number">1.2.</span> <span class="nav-text">比较结果、文档解释</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E7%A8%8B%E5%BA%8F%E6%AF%94%E8%BE%83"><span class="nav-number">1.3.</span> <span class="nav-text">具体程序比较</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98-TR-TE-%E7%9A%84%E6%83%85%E5%BD%A2%EF%BC%8C%E8%80%8C%E4%B8%8D%E4%BB%85%E4%BB%85%E6%98%AF-TE"><span class="nav-number">2.</span> <span class="nav-text">变 TR(TE) 的情形，而不仅仅是 TE.</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">PepperXZC</p>
+  <div class="site-description" itemprop="description">An ordinary student</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PepperXZC" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PepperXZC" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:pepiipepper@163.com" title="E-Mail → mailto:pepiipepper@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/mayflyxzc" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;mayflyxzc" rel="noopener me" target="_blank"><i class="fab fa-facebook fa-fw"></i>FB Page</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://pepthink.com/posts/7e03c1ae.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="PepperXZC">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PepperXZC's Notes">
+      <meta itemprop="description" content="An ordinary student">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MRI Simulation - GRE and SSFP | PepperXZC's Notes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MRI Simulation - GRE and SSFP
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-01-08 09:15:49" itemprop="dateCreated datePublished" datetime="2023-01-08T09:15:49+00:00">2023-01-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-05-21 10:58:34" itemprop="dateModified" datetime="2024-05-21T10:58:34+00:00">2024-05-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MRI/" itemprop="url" rel="index"><span itemprop="name">MRI</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/posts/7e03c1ae.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/7e03c1ae.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>这里记录一下不同种类的 Sequence 得到的 M。</p>
+<span id="more"></span>
+<h3 id="比较-GRE-与-refocussed-SSFP-的效果"><a href="#比较-GRE-与-refocussed-SSFP-的效果" class="headerlink" title="比较 GRE 与 refocussed-SSFP 的效果"></a>比较 GRE 与 refocussed-SSFP 的效果</h3><h4 id="主程序"><a href="#主程序" class="headerlink" title="主程序"></a>主程序</h4><p>首先是主程序：<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">T1 = <span class="number">600</span>;	<span class="comment">% ms.</span></span><br><span class="line">T2 = <span class="number">100</span>;	<span class="comment">% ms.</span></span><br><span class="line">TE = <span class="number">0</span>:<span class="number">2.5</span>:<span class="number">10</span>;	<span class="comment">% ms.</span></span><br><span class="line">TR = <span class="number">10</span>;	<span class="comment">% ms.</span></span><br><span class="line">flip = <span class="built_in">pi</span>/<span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">df = [<span class="number">-100</span>:<span class="number">100</span>]; 	<span class="comment">%Hz</span></span><br><span class="line"></span><br><span class="line">Sig = <span class="built_in">zeros</span>(<span class="built_in">length</span>(df),<span class="built_in">length</span>(TE));</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> n=<span class="number">1</span>:<span class="built_in">length</span>(TE)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> k=<span class="number">1</span>:<span class="built_in">length</span>(df)</span><br><span class="line">		[Msig,Mss] = sssignal(flip,T1,T2,TE(n),TR,df(k));</span><br><span class="line">        <span class="comment">% [Mss,Msig] = gresignal(flip,T1,T2,TE(n),TR,df(k));</span></span><br><span class="line">		Sig(k,n)=Mss(<span class="number">1</span>)+<span class="built_in">i</span>*Mss(<span class="number">2</span>);</span><br><span class="line">	<span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line">	<span class="comment">% ===== Plot the Results ======</span></span><br><span class="line"></span><br><span class="line">subplot(<span class="number">2</span>,<span class="number">1</span>,<span class="number">1</span>);</span><br><span class="line"><span class="built_in">plot</span>(df,<span class="built_in">abs</span>(Sig));</span><br><span class="line">xlabel(<span class="string">'Frequency (Hz)'</span>);</span><br><span class="line">ylabel(<span class="string">'Magnitude'</span>);</span><br><span class="line">grid on;</span><br><span class="line"><span class="built_in">legend</span>(<span class="string">'TE=0'</span>, <span class="string">'TE=2.5'</span>, <span class="string">'TE=5.0'</span>, <span class="string">'TE=7.5'</span>, <span class="string">'TE=10'</span>);</span><br><span class="line"></span><br><span class="line">subplot(<span class="number">2</span>,<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line"><span class="built_in">plot</span>(df,<span class="built_in">angle</span>(Sig));</span><br><span class="line">xlabel(<span class="string">'Frequency (Hz)'</span>);</span><br><span class="line">ylabel(<span class="string">'Phase (radians)'</span>);</span><br><span class="line">axis([<span class="built_in">min</span>(df) <span class="built_in">max</span>(df) -<span class="built_in">pi</span> <span class="built_in">pi</span>]);</span><br><span class="line">grid on;</span><br><span class="line"><span class="built_in">legend</span>(<span class="string">'TE=0'</span>, <span class="string">'TE=2.5'</span>, <span class="string">'TE=5.0'</span>, <span class="string">'TE=7.5'</span>, <span class="string">'TE=10'</span>);</span><br></pre></td></tr></table></figure></p>
+<h4 id="比较结果、文档解释"><a href="#比较结果、文档解释" class="headerlink" title="比较结果、文档解释"></a>比较结果、文档解释</h4><p>上面这个是基于 Steady state signal 得到的情况，图片为：<br><img src="https://pepnote.cn//image/1-1673325462653-5.jpg" alt></p>
+<p>这一情况被称为 balanced steady-state free-precession (SSFP), 这里<code>sssignal.m</code>据文档所述，已经计算好了 refocussed-SSFP。</p>
+<blockquote>
+<p>The balanced SSFP sequence simply consists of alpha excitation pulses spaced TR apart. TR is usually very short, on the order of several milliseconds.<br>Refocussed-SSFP means that the imaging gradients are fully refocussed. But we haven’t put in any imaging gradients yet, so this is true!</p>
+</blockquote>
+<p>将上面的<code>sssignal.m</code>函数直接替换成<code>gresignal.m</code>，得到下面的这张图：<br><img src="https://pepnote.cn//image/2.jpg" alt></p>
+<p>在文档中是这样说的：</p>
+<blockquote>
+<p>Notice that the signal level of gradient echo (GRE) signal is exactly the same as the mean refocussed-SSFP signal. That makes sense, because the GRE signal was just the average over many spins that had different amounts of phase twist.</p>
+</blockquote>
+<p>说明一件事情：GRE signal 只是 SSFP 的升级版，区别在于 GRE 考虑很多个 spin 并取均值。每个 spin 不同就不同在他们的 dephase 相位是不同的。具体看下它们各自的代码。</p>
+<h4 id="具体程序比较"><a href="#具体程序比较" class="headerlink" title="具体程序比较"></a>具体程序比较</h4><p>首先看<code>sssignal.m</code>：<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">[Msig,Mss]</span> = <span class="title">sssignal</span><span class="params">(flip,T1,T2,TE,TR,dfreq)</span></span></span><br><span class="line"></span><br><span class="line">Rflip = yrot(flip);</span><br><span class="line">[Atr,Btr] = freeprecess(TR-TE,T1,T2,dfreq);</span><br><span class="line">[Ate,Bte] = freeprecess(TE,T1,T2,dfreq);</span><br><span class="line">Mss = inv(<span class="built_in">eye</span>(<span class="number">3</span>)-Ate*Rflip*Atr) * (Ate*Rflip*Btr+Bte);</span><br><span class="line">Msig = Mss(<span class="number">1</span>)+<span class="number">1</span><span class="built_in">i</span>*Mss(<span class="number">2</span>);</span><br></pre></td></tr></table></figure><br>这个就是很平淡无奇地计算 steady state. 但是下面的 GRE 考虑的东西很多：<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">[Mss,Msig]</span>=<span class="title">gresignal</span><span class="params">(flip,T1,T2,TE,TR,dfreq)</span></span></span><br><span class="line">N = <span class="number">100</span>;</span><br><span class="line">M = <span class="built_in">zeros</span>(<span class="number">3</span>,N);</span><br><span class="line">phi = ([<span class="number">1</span>:N]/N - <span class="number">0.5</span>) * <span class="number">4</span> * <span class="built_in">pi</span> <span class="comment">% 先在 [-2pi, 2pi]之间获得均匀分布的 N 个phi。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> k=<span class="number">1</span>:<span class="number">100</span></span><br><span class="line">    M(:,k) = gssignal(flip,T1,T2,TE,TR,dfreq,phi(k));</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">Mss = <span class="built_in">mean</span>(M, <span class="number">2</span>);</span><br><span class="line">Msig = Mss(<span class="number">1</span>)+<span class="built_in">i</span>*Mss(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">% 把两个函数放在同一个框内了，在实际使用的时候不要放在同一个.m文件中</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">[Mss,Msig]</span>=<span class="title">gssignal</span><span class="params">(flip,T1,T2,TE,TR,dfreq,phi)</span></span></span><br><span class="line">Rflip = yrot(flip);</span><br><span class="line">[Atr,Btr] = freeprecess(TR-TE,T1,T2,dfreq);</span><br><span class="line">[Ate,Bte] = freeprecess(TE,T1,T2,dfreq);</span><br><span class="line"></span><br><span class="line">Atr = zrot(phi)*Atr; <span class="comment">% TR末尾的dephase</span></span><br><span class="line"><span class="comment">% 下面的和sssignal一样的</span></span><br><span class="line">Mss = inv(<span class="built_in">eye</span>(<span class="number">3</span>)-Ate*Rflip*Atr) * (Ate*Rflip*Btr+Bte);</span><br><span class="line">Msig = Mss(<span class="number">1</span>)+<span class="built_in">i</span>*Mss(<span class="number">2</span>);</span><br><span class="line"><span class="comment">% phi is the angle by which the magnetization is dephased at the end of the TR</span></span><br><span class="line"><span class="comment">% &gt;&gt;&gt; Mss=gssignal(pi/3,600,100,2,10,0,pi/2)</span></span><br><span class="line"><span class="comment">% &gt;&gt;&gt; Mss=[0.1248, 0.1129, 0.1965]'</span></span><br><span class="line"><span class="comment">% 如果加入了一个线性的Gz，那么跟随不同的z坐标，不同的M就会有不同的dephase</span></span><br><span class="line"><span class="comment">% 所以这里只是模拟了一下，假设给了一个dephase角度，该怎么算。</span></span><br><span class="line"><span class="comment">% 这里给的结论就是按 Rz(dephase)来算的。</span></span><br></pre></td></tr></table></figure><br>在文档中的解释：</p>
+<blockquote>
+<p>gresignal.m calculates the average magnetization over, say, 100 points with the phase varying uniformly from -2<em>pi to 2</em>pi.</p>
+</blockquote>
+<p>也就是说这里区别在于多了一个 <code>phi</code>。这个就是模拟<strong>梯度磁场</strong>进来之后，对其中100个点（100个不同z坐标上的点）的相位影响，具体影响就在 <code>Atr = zrot(phi)*Atr;</code> 也就是按z轴上旋转了<code>phi</code>的角度。</p>
+<p>这样一来，前后就都能串起来了。</p>
+<h3 id="变-TR-TE-的情形，而不仅仅是-TE"><a href="#变-TR-TE-的情形，而不仅仅是-TE" class="headerlink" title="变 TR(TE) 的情形，而不仅仅是 TE."></a>变 TR(TE) 的情形，而不仅仅是 TE.</h3>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer"><div class="post-widgets">
+      <div id="needsharebutton-postbottom">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    </div>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PepperXZC
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://pepthink.com/posts/7e03c1ae.html" title="MRI Simulation - GRE and SSFP">http://pepthink.com/posts/7e03c1ae.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/MRI/" rel="tag"># MRI</a>
+              <a href="/tags/Matlab-code/" rel="tag"># Matlab code</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/a777488.html" rel="prev" title="PDF清晰化处理trick">
+                  <i class="fa fa-angle-left"></i> PDF清晰化处理trick
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/6aa290b2.html" rel="next" title="hexo搜索框部署后调用失败的问题">
+                  hexo搜索框部署后调用失败的问题 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">PepperXZC</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">27k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">44 分钟</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/PepperXZC" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline-think.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","meta":["nick","mail","link"],"requiredMeta":["nick"],"el":"#waline","comment":true,"path":"/posts/7e03c1ae.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-needmoreshare2@1/needsharebutton.min.js"></script>
+  <script>
+      pbOptions = {};
+        pbOptions.iconStyle = "box";
+        pbOptions.boxForm = "horizontal";
+        pbOptions.position = "bottomCenter";
+        pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+  </script>
+</body>
+</html>

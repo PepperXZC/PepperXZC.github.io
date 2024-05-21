@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.lug.ustc.edu.cn/css?family=Times+New+Roman:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link href="https://fonts.googleapis.com/css?family=Noto+Serif+SC|Roboto&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"pepthink.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="这篇内容记录了有关cmake配置问题的解决方案。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CMake + cpp + WSL 学习记录">
+<meta property="og:url" content="http://pepthink.com/posts/72a339b5.html">
+<meta property="og:site_name" content="PepperXZC&#39;s Notes">
+<meta property="og:description" content="这篇内容记录了有关cmake配置问题的解决方案。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-13T20:58:47.000Z">
+<meta property="article:modified_time" content="2024-05-21T10:58:34.257Z">
+<meta property="article:author" content="PepperXZC">
+<meta property="article:tag" content="debug">
+<meta property="article:tag" content="CMake">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://pepthink.com/posts/72a339b5.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://pepthink.com/posts/72a339b5.html","path":"posts/72a339b5.html","title":"CMake + cpp + WSL 学习记录"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CMake + cpp + WSL 学习记录 | PepperXZC's Notes</title>
+  
+
+
+
+
+
+
+
+<link rel="dns-prefetch" href="https://waline-think.vercel.app"><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/theme-next/theme-next-needmoreshare2@1/needsharebutton.min.css"><style>
+#needsharebutton-postbottom {
+  cursor: pointer;
+  height: 26px;
+  margin-top: 10px;
+  position: relative;
+}
+#needsharebutton-postbottom .btn {
+  border: 1px solid $btn-default-border-color;
+  border-radius: 3px;
+  display: initial;
+  padding: 1px 4px;
+}
+</style>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><link rel="alternate" href="/atom.xml" title="PepperXZC's Notes" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">PepperXZC's Notes</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Time will tell.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-schedule"><a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%981-%E5%AE%89%E8%A3%85%E5%A5%BD-Ubuntu-%E4%B9%8B%E5%90%8E%E9%A9%AC%E4%B8%8A%E5%B0%B1%E6%8A%A5%E9%94%99%EF%BC%9A0x800701bc"><span class="nav-number">1.</span> <span class="nav-text">问题1. 安装好 Ubuntu 之后马上就报错：0x800701bc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%982-%E5%AE%89%E8%A3%85-Eigen-%E5%BA%93%E5%A7%8B%E7%BB%88%E5%A4%B1%E8%B4%A5%EF%BC%9A%E6%89%BE%E4%B8%8D%E5%88%B0-EigenConfig-cmake"><span class="nav-number">2.</span> <span class="nav-text">问题2. 安装 Eigen 库始终失败：找不到 EigenConfig.cmake</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%983-%E4%BD%BF%E7%94%A8%E6%B8%85%E5%8D%8E%E6%BA%90"><span class="nav-number">3.</span> <span class="nav-text">问题3. 使用清华源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%984-%E5%AE%89%E8%A3%85%E5%BF%85%E8%A6%81%E7%9A%84%E5%BA%93%EF%BC%8C%E5%AE%89%E8%A3%85OpenCV"><span class="nav-number">4.</span> <span class="nav-text">问题4. 安装必要的库，安装OpenCV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%985%EF%BC%9ACMake%E5%AE%89%E8%A3%85OpenCV%E6%97%B6%E5%8D%A1%E5%9C%A8-IPPICV"><span class="nav-number">5.</span> <span class="nav-text">问题5：CMake安装OpenCV时卡在 IPPICV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Note-%E8%AE%B0%E5%BD%95-ssh-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">6.</span> <span class="nav-text">Note: 记录 ssh 基本操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%986%EF%BC%9Aclone-%E4%BB%93%E5%BA%93%E7%9A%84%E6%97%B6%E5%80%99%E6%8A%A5%E9%94%99"><span class="nav-number">7.</span> <span class="nav-text">问题6：clone 仓库的时候报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%987%EF%BC%9A%E5%9C%A8%E5%AF%B9%E5%BA%94%E7%9B%AE%E5%BD%95%E4%B8%8B%E4%BD%BF%E7%94%A8code-%E5%91%BD%E4%BB%A4%E4%B8%8D%E7%94%9F%E6%95%88"><span class="nav-number">8.</span> <span class="nav-text">问题7：在对应目录下使用code .命令不生效</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%988%EF%BC%9A%E5%AE%89%E8%A3%85-yaml-cpp"><span class="nav-number">9.</span> <span class="nav-text">问题8：安装 yaml-cpp</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#python-%E4%B8%AD%E7%9A%84-yaml-%E5%8C%85"><span class="nav-number">9.1.</span> <span class="nav-text">python 中的 yaml 包</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%989%EF%BC%9A%E6%89%BE%E4%B8%8D%E5%88%B0-%E2%80%9Comp-h%E2%80%9D"><span class="nav-number">10.</span> <span class="nav-text">问题9：找不到 “omp.h”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%9810%EF%BC%9AVSCode-%E9%85%8D%E7%BD%AE-Clangd"><span class="nav-number">11.</span> <span class="nav-text">问题10：VSCode 配置 Clangd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%9811%EF%BC%9AVSCode-%E9%85%8D%E7%BD%AE-gdb-%E8%B0%83%E8%AF%95"><span class="nav-number">12.</span> <span class="nav-text">问题11：VSCode 配置 gdb 调试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%9811%EF%BC%9ALinux-%E5%AE%89%E8%A3%85-Miniconda"><span class="nav-number">13.</span> <span class="nav-text">问题11：Linux 安装 Miniconda</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%EF%BC%9A"><span class="nav-number">13.0.1.</span> <span class="nav-text">下载：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%EF%BC%9A"><span class="nav-number">13.0.2.</span> <span class="nav-text">安装：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9-bashrc"><span class="nav-number">13.0.3.</span> <span class="nav-text">修改~&#x2F;.bashrc:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8D%A2%E6%BA%90%EF%BC%9A"><span class="nav-number">13.0.4.</span> <span class="nav-text">换源：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%9812%EF%BC%9AWin11-%E5%AE%89%E8%A3%85-Miniconda"><span class="nav-number">14.</span> <span class="nav-text">问题12：Win11 安装 Miniconda</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83"><span class="nav-number">14.1.</span> <span class="nav-text">创建虚拟环境</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%9813%EF%BC%9A-gitignore%E6%96%87%E4%BB%B6%E5%BF%BD%E7%95%A5%E4%B8%8D%E7%94%9F%E6%95%88"><span class="nav-number">15.</span> <span class="nav-text">问题13：.gitignore文件忽略不生效</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">PepperXZC</p>
+  <div class="site-description" itemprop="description">An ordinary student</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/PepperXZC" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;PepperXZC" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:pepiipepper@163.com" title="E-Mail → mailto:pepiipepper@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/mayflyxzc" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;mayflyxzc" rel="noopener me" target="_blank"><i class="fab fa-facebook fa-fw"></i>FB Page</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://pepthink.com/posts/72a339b5.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="PepperXZC">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PepperXZC's Notes">
+      <meta itemprop="description" content="An ordinary student">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="CMake + cpp + WSL 学习记录 | PepperXZC's Notes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CMake + cpp + WSL 学习记录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-04-13 20:58:47" itemprop="dateCreated datePublished" datetime="2023-04-13T20:58:47+00:00">2023-04-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-05-21 10:58:34" itemprop="dateModified" datetime="2024-05-21T10:58:34+00:00">2024-05-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/debug/" itemprop="url" rel="index"><span itemprop="name">debug</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">评论数：</span>
+  
+    <a title="waline" href="/posts/72a339b5.html#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/72a339b5.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>8.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>14 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>这篇内容记录了有关cmake配置问题的解决方案。</p>
+<span id="more"></span>
+<h3 id="问题1-安装好-Ubuntu-之后马上就报错：0x800701bc"><a href="#问题1-安装好-Ubuntu-之后马上就报错：0x800701bc" class="headerlink" title="问题1. 安装好 Ubuntu 之后马上就报错：0x800701bc"></a>问题1. 安装好 Ubuntu 之后马上就报错：0x800701bc</h3><p>安装 ubuntu 执行的代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl --install -d ubuntu 20.04</span><br></pre></td></tr></table></figure>
+<p>这个时候首先检查<code>启用或关闭 Windows 功能</code>里面是否已经打开了：</p>
+<ol>
+<li>适用于 Linux 的 Windows 子系统</li>
+<li>虚拟机平台</li>
+</ol>
+<p>这两个安装好之后需要重启电脑生效。然后点击下面这个链接：<a target="_blank" rel="noopener" href="https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi">Linux Update Setup</a> 并点击安装。安装好之后就没问题了。</p>
+<h3 id="问题2-安装-Eigen-库始终失败：找不到-EigenConfig-cmake"><a href="#问题2-安装-Eigen-库始终失败：找不到-EigenConfig-cmake" class="headerlink" title="问题2. 安装 Eigen 库始终失败：找不到 EigenConfig.cmake"></a>问题2. 安装 Eigen 库始终失败：找不到 EigenConfig.cmake</h3><p>这个问题主要是因为下载得到的 Eigen 库代码是源码，是需要经过编译的。</p>
+<p>在下载好的 Eigen 库源码文件夹下执行以下代码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir build</span><br><span class="line">cd build</span><br><span class="line">sudo cmake ..</span><br><span class="line">(sudo make install)</span><br></pre></td></tr></table></figure>
+<p>最后一行打了括号，因为我目前使用的是 win11 的平台，没有<code>make</code>这个函数指令。但是在ubuntu上应该是需要这个的。</p>
+<h3 id="问题3-使用清华源"><a href="#问题3-使用清华源" class="headerlink" title="问题3. 使用清华源"></a>问题3. 使用清华源</h3><p>这里因为清华源有开发目前 WSL 常用的所有版本对应的源链接，所以留一下这个网址备忘。</p>
+<p><a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/">ubuntu | 镜像站使用帮助 | 清华大学开源软件镜像站 | Tsinghua Open Source Mirror</a></p>
+<h3 id="问题4-安装必要的库，安装OpenCV"><a href="#问题4-安装必要的库，安装OpenCV" class="headerlink" title="问题4. 安装必要的库，安装OpenCV"></a>问题4. 安装必要的库，安装OpenCV</h3><p>首先是最基本构建工程需要的一些库：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install -y g++ </span><br><span class="line">sudo apt install -y cmake </span><br><span class="line">sudo apt install -y make </span><br><span class="line">sudo apt install -y wget </span><br><span class="line">sudo apt install -y unzip</span><br></pre></td></tr></table></figure>
+<p>然后是<code>opencv</code>依赖的必需品：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install build-essential libgtk2.0-dev libgtk-3-dev libavcodec-dev libavformat-dev libjpeg-dev libswscale-dev libtiff5-dev</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://opencv.org/releases/">OpenCV</a> 官网链接点击 Github 链接进行包内容的下载。直接下载在<code>~/</code>的地方就可以了。</p>
+<h3 id="问题5：CMake安装OpenCV时卡在-IPPICV"><a href="#问题5：CMake安装OpenCV时卡在-IPPICV" class="headerlink" title="问题5：CMake安装OpenCV时卡在 IPPICV"></a>问题5：CMake安装OpenCV时卡在 IPPICV</h3><p>在下面这个链接里下载这个文件：</p>
+<p>链接: <a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1C05qBz-eSAUIxdwljce0kw">https://pan.baidu.com/s/1C05qBz-eSAUIxdwljce0kw</a> 密码: 4q33</p>
+<p>上面这个方式试了一下感觉不是很有用。于是反复执行原来的 make 函数，成功编译好了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake -D CMAKE_BUILD_TYPE=Release -D OPENCV_GENERATE_PKGCONFIG=YES ..</span><br></pre></td></tr></table></figure>
+<h3 id="Note-记录-ssh-基本操作"><a href="#Note-记录-ssh-基本操作" class="headerlink" title="Note: 记录 ssh 基本操作"></a>Note: 记录 ssh 基本操作</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;&quot;</span><br><span class="line">git config --global user.email &quot;&quot;</span><br><span class="line">ssh-keygen -t rsa -C &quot;&quot;</span><br><span class="line">vim ...(id_rsa.pub)</span><br></pre></td></tr></table></figure>
+<h3 id="问题6：clone-仓库的时候报错"><a href="#问题6：clone-仓库的时候报错" class="headerlink" title="问题6：clone 仓库的时候报错"></a>问题6：clone 仓库的时候报错</h3><p>报错具体内容：<code>remote: Support for password authentication was removed</code></p>
+<p>改用 git-ssh 而非 HTTPS 进行 clone 就好了。</p>
+<p>update: 有的仓库没有 git-ssh，第二种解决办法是开一下梯子。</p>
+<h3 id="问题7：在对应目录下使用code-命令不生效"><a href="#问题7：在对应目录下使用code-命令不生效" class="headerlink" title="问题7：在对应目录下使用code .命令不生效"></a>问题7：在对应目录下使用<code>code .</code>命令不生效</h3><p>在 ubuntu 的终端中使用如下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>然后找到原本电脑上安装好的 VS Code 的目录下的 <code>/bin</code>目录，在我的电脑上就是<code>D:\Program Files (x86)\Microsoft VS Code\bin</code>，切换成<code>/mnt/d/...</code>的语法，在<code>.bashrc</code>中添加这一行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PATH=&quot;$PATH:/mnt/e/program/VSCode/Microsoft VS Code/bin&quot;</span><br></pre></td></tr></table></figure>
+<p>重启 ubuntu 终端并重新执行原命令即可。</p>
+<h3 id="问题8：安装-yaml-cpp"><a href="#问题8：安装-yaml-cpp" class="headerlink" title="问题8：安装 yaml-cpp"></a>问题8：安装 yaml-cpp</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/jbeder/yaml-cpp.git</span><br><span class="line">cd yaml-cpp</span><br><span class="line">mkdir build &amp;&amp; cd build</span><br><span class="line">cmake -D BUILD_SHARED_LIBS=ON ..</span><br><span class="line">make -j16</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<h4 id="python-中的-yaml-包"><a href="#python-中的-yaml-包" class="headerlink" title="python 中的 yaml 包"></a>python 中的 yaml 包</h4><p>需要安装的是：<code>conda install pyyaml</code></p>
+<h3 id="问题9：找不到-“omp-h”"><a href="#问题9：找不到-“omp-h”" class="headerlink" title="问题9：找不到 “omp.h”"></a>问题9：找不到 “omp.h”</h3><p><code>OpenMP</code>库是随着cpp一起安装的，不需要额外安装其他东西。但实际上还是有依赖的库是一定要安装好的，否则还是无法使用这个库。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install -y libomp-dev</span><br></pre></td></tr></table></figure>
+<h3 id="问题10：VSCode-配置-Clangd"><a href="#问题10：VSCode-配置-Clangd" class="headerlink" title="问题10：VSCode 配置 Clangd"></a>问题10：VSCode 配置 Clangd</h3><p>可以跟着<a target="_blank" rel="noopener" href="https://blog.csdn.net/xzq1207105685/article/details/126091947">为vscode配置Clangd CSDN博客</a> 这篇文章做。其中涉及到的代码在这里也可以复制，就不用再去登录 CSDN。</p>
+<p><code>settings.json</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;files.associations&quot;: &#123;</span><br><span class="line">    &quot;iostream&quot;: &quot;cpp&quot;,</span><br><span class="line">    &quot;intrinsics.h&quot;: &quot;c&quot;,</span><br><span class="line">    &quot;ostream&quot;: &quot;cpp&quot;,</span><br><span class="line">    &quot;vector&quot;: &quot;cpp&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  // 开启粘贴保存自动格式化</span><br><span class="line">  &quot;editor.formatOnPaste&quot;: true,</span><br><span class="line">  &quot;editor.formatOnSave&quot;: true,</span><br><span class="line">  &quot;editor.formatOnType&quot;: true,</span><br><span class="line">  &quot;C_Cpp.errorSquiggles&quot;: &quot;Disabled&quot;,</span><br><span class="line">  &quot;C_Cpp.intelliSenseEngineFallback&quot;: &quot;Disabled&quot;,</span><br><span class="line">  &quot;C_Cpp.intelliSenseEngine&quot;: &quot;Disabled&quot;,</span><br><span class="line">  &quot;C_Cpp.autocomplete&quot;: &quot;Disabled&quot;, // So you don&#x27;t get autocomplete from both extensions.</span><br><span class="line">  &quot;clangd.path&quot;: &quot;/usr/bin/clangd&quot;,</span><br><span class="line">  // Clangd 运行参数(在终端/命令行输入 clangd --help-list-hidden 可查看更多)</span><br><span class="line">  &quot;clangd.arguments&quot;: [</span><br><span class="line">    // 让 Clangd 生成更详细的日志</span><br><span class="line">    &quot;--log=verbose&quot;,</span><br><span class="line">    // 输出的 JSON 文件更美观</span><br><span class="line">    &quot;--pretty&quot;,</span><br><span class="line">    // 全局补全(输入时弹出的建议将会提供 CMakeLists.txt 里配置的所有文件中可能的符号，会自动补充头文件)</span><br><span class="line">    &quot;--all-scopes-completion&quot;,</span><br><span class="line">    // 建议风格：打包(重载函数只会给出一个建议）</span><br><span class="line">    // 相反可以设置为detailed</span><br><span class="line">    &quot;--completion-style=bundled&quot;,</span><br><span class="line">    // 跨文件重命名变量</span><br><span class="line">    &quot;--cross-file-rename&quot;,</span><br><span class="line">    // 允许补充头文件</span><br><span class="line">    &quot;--header-insertion=iwyu&quot;,</span><br><span class="line">    // 输入建议中，已包含头文件的项与还未包含头文件的项会以圆点加以区分</span><br><span class="line">    &quot;--header-insertion-decorators&quot;,</span><br><span class="line">    // 在后台自动分析文件(基于 complie_commands，我们用CMake生成)</span><br><span class="line">    &quot;--background-index&quot;,</span><br><span class="line">    // 启用 Clang-Tidy 以提供「静态检查」</span><br><span class="line">    &quot;--clang-tidy&quot;,</span><br><span class="line">    // Clang-Tidy 静态检查的参数，指出按照哪些规则进行静态检查，详情见「与按照官方文档配置好的 VSCode 相比拥有的优势」</span><br><span class="line">    // 参数后部分的*表示通配符</span><br><span class="line">    // 在参数前加入-，如-modernize-use-trailing-return-type，将会禁用某一规则</span><br><span class="line">    &quot;--clang-tidy-checks=cppcoreguidelines-*,performance-*,bugprone-*,portability-*,modernize-*,google-*&quot;,</span><br><span class="line">    // 默认格式化风格: 谷歌开源项目代码指南</span><br><span class="line">    // &quot;--fallback-style=file&quot;,</span><br><span class="line">    // 同时开启的任务数量</span><br><span class="line">    &quot;-j=2&quot;,</span><br><span class="line">    // pch优化的位置(memory 或 disk，选择memory会增加内存开销，但会提升性能) 推荐在板子上使用disk</span><br><span class="line">    &quot;--pch-storage=disk&quot;,</span><br><span class="line">    // 启用这项时，补全函数时，将会给参数提供占位符，键入后按 Tab 可以切换到下一占位符，乃至函数末</span><br><span class="line">    // 我选择禁用</span><br><span class="line">    &quot;--function-arg-placeholders=false&quot;,</span><br><span class="line">    // compelie_commands.json 文件的目录位置(相对于工作区，由于 CMake 生成的该文件默认在 build 文件夹中，故设置为 build)</span><br><span class="line">    &quot;--compile-commands-dir=build&quot;</span><br><span class="line">  ],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="问题11：VSCode-配置-gdb-调试"><a href="#问题11：VSCode-配置-gdb-调试" class="headerlink" title="问题11：VSCode 配置 gdb 调试"></a>问题11：VSCode 配置 gdb 调试</h3><p>我的配置文件<code>launch.json</code>：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="comment">// Use IntelliSense to learn about possible attributes.</span></span><br><span class="line">  <span class="comment">// Hover to view descriptions of existing attributes.</span></span><br><span class="line">  <span class="comment">// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387</span></span><br><span class="line">  <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0.2.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;(gdb) 启动&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cppdbg&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;request&quot;</span><span class="punctuation">:</span> <span class="string">&quot;launch&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;program&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;workspaceFolder&#125;/build/bin/bSSFPSeq&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;stopAtEntry&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;environment&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;externalConsole&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;MIMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gdb&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;miDebuggerPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/usr/bin/gdb&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;logging&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;traceResponse&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;setupCommands&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;为 gdb 启用整齐打印&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;-enable-pretty-printing&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;ignoreFailures&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;将反汇编风格设置为 Intel&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;-gdb-set disassembly-flavor intel&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;ignoreFailures&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;(lldb) Launch&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cppdbg&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;request&quot;</span><span class="punctuation">:</span> <span class="string">&quot;launch&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;program&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;workspaceFolder&#125;/$&#123;fileBasenameNoExtension&#125;&quot;</span><span class="punctuation">,</span> <span class="comment">// 只有这一行是自己编辑过的，其他的全是默认，方便吧？</span></span><br><span class="line">      <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;stopAtEntry&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;environment&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;externalConsole&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;MIMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;lldb&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;miDebuggerPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/usr/bin/gdb.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;preLaunchTask&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C/C++: g++-11 生成活动文件&quot;</span></span><br><span class="line">      <span class="comment">//   &quot;setupCommands&quot;: [</span></span><br><span class="line">      <span class="comment">//       &#123;</span></span><br><span class="line">      <span class="comment">//           &quot;description&quot;: &quot;Enable pretty-printing for gdb&quot;,</span></span><br><span class="line">      <span class="comment">//           &quot;text&quot;: &quot;-enable-pretty-printing&quot;,</span></span><br><span class="line">      <span class="comment">//           &quot;ignoreFailures&quot;: true</span></span><br><span class="line">      <span class="comment">//       &#125;,</span></span><br><span class="line">      <span class="comment">//       &#123;</span></span><br><span class="line">      <span class="comment">//           &quot;description&quot;:  &quot;Set Disassembly Flavor to Intel&quot;,</span></span><br><span class="line">      <span class="comment">//           &quot;text&quot;: &quot;-gdb-set disassembly-flavor intel&quot;,</span></span><br><span class="line">      <span class="comment">//           &quot;ignoreFailures&quot;: true</span></span><br><span class="line">      <span class="comment">//       &#125;</span></span><br><span class="line">      <span class="comment">//   ]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>请记住，在使用之前确保已经安装好了<code>gdb</code>。Ubuntu 的确是自带一个 gdb 调试工具，但那个几乎没用，因为缺乏必要的包工具。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install gdb</span><br></pre></td></tr></table></figure>
+<h3 id="问题11：Linux-安装-Miniconda"><a href="#问题11：Linux-安装-Miniconda" class="headerlink" title="问题11：Linux 安装 Miniconda"></a>问题11：Linux 安装 Miniconda</h3><p>我使用 python 来生成序列结点文件，为此我还是需要安装一个<code>miniconda</code>的。</p>
+<h5 id="下载："><a href="#下载：" class="headerlink" title="下载："></a>下载：</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-py38_4.8.3-Linux-x86_64.sh --no-check-certificate</span><br></pre></td></tr></table></figure>
+<h5 id="安装："><a href="#安装：" class="headerlink" title="安装："></a>安装：</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash Miniconda3-py38_4.8.3-Linux-x86_64.sh</span><br></pre></td></tr></table></figure>
+<h5 id="修改-bashrc"><a href="#修改-bashrc" class="headerlink" title="修改~/.bashrc:"></a>修改<code>~/.bashrc</code>:</h5><p>vim 打开，在这个文件的最后加入一行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PATH=$PATH:/home/用户名/anaconda3/bin</span><br></pre></td></tr></table></figure>
+<p>保存退出，激活：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>这个时候使用<code>conda</code>命令才能看到确实已经激活。</p>
+<p>但是即便如此，每次打开新的window的时候都需要使用上面这行代码，否则的话<code>conda</code>命令就还是无效的。所以按照下面进行修改：</p>
+<p>在<code>~/.bash_profile</code>文件中添加如下代码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if test -f .bashrc ; then</span><br><span class="line">source .bashrc </span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<p>重启后就发现确实生效了。不用再麻烦了。</p>
+<h5 id="换源："><a href="#换源：" class="headerlink" title="换源："></a>换源：</h5><p>在用户目录(~)下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch .condarc</span><br></pre></td></tr></table></figure>
+<p><code>vim</code>打开，内容为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">channels:</span><br><span class="line">  - defaults</span><br><span class="line">show_channel_urls: true</span><br><span class="line">channel_alias: https://mirrors.tuna.tsinghua.edu.cn/anaconda</span><br><span class="line">default_channels:</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/pro</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2</span><br><span class="line">custom_channels:</span><br><span class="line">  conda-forge: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud</span><br><span class="line">  msys2: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud</span><br><span class="line">  bioconda: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud</span><br><span class="line">  menpo: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud</span><br><span class="line">  pytorch: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud</span><br><span class="line">  simpleitk: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud</span><br></pre></td></tr></table></figure>
+<p>清除缓存：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda clean -i</span><br></pre></td></tr></table></figure>
+<p>检查是否换源成功：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda config --show</span><br></pre></td></tr></table></figure>
+<h3 id="问题12：Win11-安装-Miniconda"><a href="#问题12：Win11-安装-Miniconda" class="headerlink" title="问题12：Win11 安装 Miniconda"></a>问题12：Win11 安装 Miniconda</h3><p><a target="_blank" rel="noopener" href="https://docs.conda.io/en/latest/miniconda.html#">Miniconda — conda documentation</a> 选择合适的版本，一路下一步，直到安装完毕。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/</span><br><span class="line">conda config --set show_channel_urls yes</span><br></pre></td></tr></table></figure>
+<p>使用这个命令光速换源。</p>
+<h4 id="创建虚拟环境"><a href="#创建虚拟环境" class="headerlink" title="创建虚拟环境"></a>创建虚拟环境</h4><p>因为我这边是直接安装在了C盘，接下来就需要在指定的工作区安装虚拟环境。一些常用的指令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 更新</span><br><span class="line">conda update conda</span><br><span class="line">// 查看现有的虚拟环境</span><br><span class="line">conda info --envs</span><br></pre></td></tr></table></figure>
+<p>创建：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda create --prefix=D:/Study/venv -n venv python=3.8</span><br></pre></td></tr></table></figure>
+<p>删除的话似乎直接将虚拟环境所在的那个文件夹丢入垃圾桶就可以了。<code>conda</code>列表将自动把那个环境扔掉。</p>
+<p>但感觉似乎也没有必要在win的环境下再安装虚拟环境。</p>
+<h3 id="问题13：-gitignore文件忽略不生效"><a href="#问题13：-gitignore文件忽略不生效" class="headerlink" title="问题13：.gitignore文件忽略不生效"></a>问题13：<code>.gitignore</code>文件忽略不生效</h3><p>原本是想将<code>build</code>文件夹下的文件都忽略掉，但是使用了<code>build/*</code>并没有任何作用。</p>
+<p>原因：<code>build</code>文件夹下的文件已经在本地缓存中被添加进入了结点，已经无法被忽略了。这个时候需要执行下面的代码，删除缓存：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git rm -r --cached .</span><br></pre></td></tr></table></figure>
+<p>然后按照原本的上传规则进行上传就好了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer"><div class="post-widgets">
+      <div id="needsharebutton-postbottom">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    </div>
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>PepperXZC
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://pepthink.com/posts/72a339b5.html" title="CMake + cpp + WSL 学习记录">http://pepthink.com/posts/72a339b5.html</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/debug/" rel="tag"># debug</a>
+              <a href="/tags/CMake/" rel="tag"># CMake</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/e33665a0.html" rel="prev" title="MOLLI Simulator">
+                  <i class="fa fa-angle-left"></i> MOLLI Simulator
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">PepperXZC</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">27k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">44 分钟</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/PepperXZC" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"zh-CN","enable":true,"serverURL":"https://waline-think.vercel.app","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":false,"libUrl":"https://unpkg.com/@waline/client@v2/dist/waline.js","meta":["nick","mail","link"],"requiredMeta":["nick"],"el":"#waline","comment":true,"path":"/posts/72a339b5.html"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-needmoreshare2@1/needsharebutton.min.js"></script>
+  <script>
+      pbOptions = {};
+        pbOptions.iconStyle = "box";
+        pbOptions.boxForm = "horizontal";
+        pbOptions.position = "bottomCenter";
+        pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+  </script>
+</body>
+</html>
